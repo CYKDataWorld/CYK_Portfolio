@@ -1,0 +1,128 @@
+---
+title: "FinalProject"
+output: html_document
+---
+
+```{r}
+startup <-read_csv("~/Downloads/investments_startup.csv")
+mydata <- na.omit(startup)
+str(mydata)
+```
+
+```{r} 
+# market
+perCent <- mydata$market
+marKet <- cbind(freq = table(perCent), percentage = prop.table(table(perCent))*100)
+suM <- sum(count1$n)
+m1 <- group_by(mydata, market) 
+m2 <- summarise(m1, firms = n())
+m3 <- select(arrange(m2,firms), market, firms)
+m4 <- tail(m3, 10)
+total_firms <- 21840
+m5 <- mutate(m4, percent = (firms/total_firms)*100)
+m6 <- data.frame(group=c("Clean Technology", "Advertising", "Hardware + Software", "E-Commerce", "Health Care", "Enterprise Software", "Curated Web", "Mobile", "Biotechnology", "Software", "others"), perCent = c(2.4, 2.5, 2.6, 3.0, 3.1, 3.6, 3.7, 4.1, 8.3, 11.4, 55.3))
+m7 <- plot_ly(m6, labels = ~group, values = ~perCent, type = 'pie') %>%
+  layout(title = "Market # Top 10",          
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+m7
+```
+
+```{r}
+# status
+s1 <- group_by(mydata, status) 
+s2 <- summarise(s1, total = n())
+s3 <- select(arrange(s2,total),status, total)
+s4 <- mutate(s3, percent = round(total / sum(total)*100, digits = 1))
+ggplot(data = s4, aes(x=status, y=percent, fill=factor(percent)))+geom_bar(stat="identity")
+```
+
+```{r}
+# founded year
+f1 <- group_by(mydata, founded_year) 
+f2 <- summarise(f1, total = n())
+ggplot(data = f2, aes(x=founded_year, y=total, fill=factor(total)))+geom_bar(stat="identity")
+```
+
+```{r}
+#country
+c1 <- group_by(mydata, country_code)
+c1
+c2 <- summarise(c1, total = n())
+c3 <- select(arrange(c2,total), country_code, total)
+ggplot(c3, aes(x = reorder(country_code, total), y = total, fill = country_code))+
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = total), hjust = 1)+
+  coord_flip()+
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "none")
+```
+
+```{r}
+# states
+st1 <- group_by(mydata, state_code)
+st2 <- summarise(st1, total = n())
+st3 <- select(arrange(st2,total), state_code, total)
+ggplot(data = st3, aes(x=state_code, y=total, fill=factor(state_code)))+geom_bar(stat="identity")+ theme(axis.text.x = element_text(angle=90, vjust=0.6))
+```
+```{r}
+# dataset: status - Operating & founded year >= 1995
+mydata1 <- filter(mydata, status =="operating", founded_year >="1995" )
+mydata1
+```
+
+```{r}
+# Chi Square - state code
+summary(table(mydata1$status, mydata1$state_code))
+```
+```{r}
+# Chi Square - founder_year
+summary(table(mydata1$status, mydata1$founded_year))
+```
+```{r}
+# Chi Square - market
+summary(table(mydata1$status, mydata1$market))
+```
+```{r}
+# Density and Exploratory Plot – state (Top 10)
+sa1 <- group_by(mydata1, state_code)
+sa2 <- summarise(sa1, total = n())
+sa3 <- select(arrange(sa2,total), state_code, total)
+top10_s <- tail(sa3, 10)
+top10_s
+s <- ggplot(top10_s, aes(x = state_code, y = total, color = factor(total))) + geom_point() + theme(axis.text.x = element_text(angle=80, vjust=0.6))
+print(s)
+d_top10 <- density(top10_s$total)
+plot(d_top10)
+```
+
+```{r}
+# # Density and Exploratory Plot - founded year > 1995
+fa1 <- group_by(mydata1, founded_year)
+fa2 <- summarise(fa1, total = n())
+fa3 <- select(arrange(fa2,total), founded_year, total)
+fa4 <- ggplot(fa3, aes(x = founded_year, y = total, color = factor(total))) + geom_point() + theme(axis.text.x = element_text(angle=55, vjust=0.6))
+print(fa4)
+boxplot(fa2$total)
+fa5 <- density(fa2$total)
+plot(fa5)
+```
+
+```{r}
+# Density and Exploratory Plot – market (top 10)
+ma1 <- group_by(mydata1, market)
+ma2 <- summarise(ma1, total = n())
+ma3 <- select(arrange(ma2,total), market, total)
+top10_m <- tail(ma3, 10)
+top10_m
+m <- ggplot(top10_m, aes(x = market, y = total, color = factor(total))) + geom_point() + theme(axis.text.x = element_text(angle=80, vjust=0.6))
+print(m)
+top10_m <- density(top10_m$total)
+plot(top10_m)
+```
+
+```{r}
+
+```
+
