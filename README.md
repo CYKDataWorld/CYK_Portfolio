@@ -1,7 +1,7 @@
 # CYK_Portfolio
 Example data science portfolio
 
-# Project 1: Analysis of factors that affect startup success
+# [Project 1: Analysis of factors that affect startup success](https://github.com/CYKDataWorld/CYK_Portfolio/blob/main/Final%20Project.pdf)
 * What are the important factors that influence the success of a startup? Could the location, founding year, market, etc. be relevant also?
 * The original dataset has 49438 observations of 39 variables. We cleaned the dataset and removed the null values resulting in a dataset of 21840 observations. 
 * We further cleaned the dataset to focus our efforts on specific features that matched our problem definition resulting in 19 variables.
